@@ -1,8 +1,9 @@
 require 'optparse'
 require 'ostruct'
 require 'awesome_print'
-require 'debugger'
 require './aws_connection'
+require './reserved_instance_report'
+require './instance_cost_helper'
 
 class AuditorOptionParser
   def self.parse(args)
@@ -34,8 +35,14 @@ options = AuditorOptionParser.parse(ARGV)
 aws_connection = AWSConnection.new(:access_key_id => options.aws_access_key,
   :secret_access_key => options.aws_secret_key)
 
-#instance_type_counts = aws_connection.get_instances
-#ap instance_type_counts
+reservations = aws_connection.get_instance_reservations(:state => 'active')
+running_instances = aws_connection.get_instances(:status => :running)
 
-aws_connection.get_instance_reservations
+ich = InstanceCostHelper.new(reservations, running_instances)
+
+#rir = ReservedInstanceReport.new(reservations)
+#rir.write
+
+#icr = InstanceCostReport.new(ich)
+#icr.write
 

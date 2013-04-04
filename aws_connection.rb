@@ -7,35 +7,30 @@ require 'debugger'
 
 class AWSConnection
   def initialize(opts)
-    # Some kind of problem with initialization here, figure out later
-    # Ended up sourcing these into environment which is super-hacky
-
     @ec2 = AWS::EC2.new(:access_key_id => opts[:access_key_id],
-      :secret_access_key => opts[:aws_secret_key])
-    
-    #@ec2.config(:access_key_id => opts[:access_key_id],
-    #  :secret_access_key => opts[:secret_access_key])
-
-    ris = @ec2.regions['us-west-1'].reserved_instances
-
-    debugger
-    puts "Initialized"
-    puts ris.count
+      :secret_access_key => opts[:secret_access_key])
   end
 
-  def get_instance_reservations
-    return 1
+  # filters is a hash of key/value pairs for equality comparison
+  # maybe generalize this later but not now.
+  def get_instance_reservations(filters = {})
+    AWS.memoize do
+      @ec2.regions['us-west-1'].reserved_instances.select do |ins|
+        filters.reduce(true) do |memo, filter_kvp|
+          memo && ins.send(filter_kvp[0]) == filter_kvp[1]
+        end
+      end
+    end
   end
 
-  def get_instances # moved from main
-    instance_type_counts = {}
-    @ec2.regions['us-west-1'].instances.each do |instance|
-      if instance.status.to_s == 'running'
-        it = instance.instance_type
-        instance_type_counts[it] = instance_type_counts[it] || 1
+  def get_instances(filters = {})
+    AWS.memoize do
+      @ec2.regions['us-west-1'].instances.select do |ins|
+        filters.reduce(true) do |memo, filter_kvp|
+          memo && ins.send(filter_kvp[0]) == filter_kvp[1]
+        end
       end
     end
   end
 end
 
-    
