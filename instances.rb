@@ -26,3 +26,21 @@ end
 
 ap role_instances
 
+instance_counts = {}
+role_instances.each do |role_name, instances|
+  instances.each do |instance_type, instance_count|
+    instance_counts[instance_type] = (instance_counts[instance_type] || 0) + 
+      instance_count
+  end
+end
+
+ap instance_counts
+
+puts "c1 mediums:"
+nodes.keys.each do |node_name|
+  node = rest.get_rest("/nodes/#{node_name}/")
+  
+  puts node.name if node[:ec2][:instance_type].to_s == "c1.medium"
+end
+
+
