@@ -2,7 +2,8 @@
 
 class OfferedInstance
   include Comparable
-  attr_accessor :price_per_hour, :availability_zone, :instance_type, :offer_type, :id
+  attr_accessor :opex_dollars_per_hour, :capex_dollars_per_hour
+  attr_accessor :availability_zone, :instance_type, :offer_type, :id
   
   def initialize(opts)
     opts.each do |k,v|
@@ -12,9 +13,9 @@ class OfferedInstance
 
   def <=>(other)
     result = nil
-    if other.respond_to?(:price_per_hour)
-      receiver_value = self.price_per_hour
-      argument_value = other.price_per_hour
+    if other.respond_to?(:opex_dollars_per_hour)
+      receiver_value = self.opex_dollars_per_hour
+      argument_value = other.opex_dollars_per_hour
 
       result = if receiver_value == argument_value
                  0

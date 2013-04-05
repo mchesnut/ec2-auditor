@@ -5,16 +5,16 @@ require './offered_instance'
 
 class OfferedInstanceCollection
   def initialize(reservations)
-    @offered_instances
+    @offered_instances = Hash.new
     populate_on_demand
     populate_reservations(reservations)
   end
   
   def allocate!(type, az)
-    min_cost_instance = @offered_instances[type][az].next!
-    @offered_instances[type][az].push(min_cost_instance) if min_cost_instance.offer_type == 'demand'
+    min_opex_instance = @offered_instances[type][az].next!
+    @offered_instances[type][az].push(min_opex_instance) if min_opex_instance.offer_type == 'demand'
 
-    min_cost_instance
+    min_opex_instance
   end
 
   protected
@@ -25,7 +25,7 @@ class OfferedInstanceCollection
       "m1.medium"   => 0.130,
       "m1.large"    => 0.260,
       "m1.xlarge"   => 0.520,
-      "m3.large"    => 0.550,
+      "m3.xlarge"   => 0.550,
       "m3.2xlarge"  => 1.100,
       "t1.micro"    => 0.025,
       "m2.xlarge"   => 0.460,
@@ -35,16 +35,17 @@ class OfferedInstanceCollection
       "c1.xlarge"   => 0.660
     }
 
-    @offered_instances = {}
     on_demand_hourly_prices.each do |instance_type, on_demand_hourly_price|
       @offered_instances[instance_type] = {
         "us-west-1a" => Containers::MinHeap.new([OfferedInstance.new(
-          :price_per_hour => on_demand_hourly_price,
+          :opex_dollars_per_hour => on_demand_hourly_price,
+          :capex_dollars_per_hour => 0,
           :availability_zone => "us-west-1a",
           :instance_type => instance_type,
           :offer_type => 'demand')]),
         "us-west-1c" => Containers::MinHeap.new([OfferedInstance.new(
-          :price_per_hour => on_demand_hourly_price,
+          :opex_dollars_per_hour => on_demand_hourly_price,
+          :capex_dollars_per_hour => 0,
           :availability_zone => "us-west-1c",
           :instance_type => instance_type,
           :offer_type => 'demand')]),
@@ -54,12 +55,15 @@ class OfferedInstanceCollection
 
   def populate_reservations(reservations)
     reservations.each do |res|
+      # Assert hourly pricing, fix if it uses something else
       throw StandardError if res.recurring_charges[0][:frequency] != "Hourly"
-      dollars_per_instance_month_opex = res.recurring_charges[0][:amount] * (24 * 30)
+      # Duration is in seconds, convert to hours
+      capex_dollars_per_hour = (res.fixed_price / res.duration.to_f) * 60 * 60
 
       res.instance_count.times do
         @offered_instances[res.instance_type][res.availability_zone].push(
-          OfferedInstance.new(:price_per_hour => res.recurring_charges[0][:amount],
+          OfferedInstance.new(:opex_dollars_per_hour => res.recurring_charges[0][:amount],
+            :capex_dollars_per_hour => capex_dollars_per_hour,
             :availability_zone => res.availability_zone,
             :instance_type => res.instance_type,
             :offer_type => 'reserved'))

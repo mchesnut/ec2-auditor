@@ -1,5 +1,4 @@
 require 'aws-sdk'
-require 'debugger'
 
 # aws_connection.rb
 # Handles the credentials and gets data from AWS. Gets injected into

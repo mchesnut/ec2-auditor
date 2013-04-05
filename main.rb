@@ -4,6 +4,9 @@ require 'awesome_print'
 require './aws_connection'
 require './reserved_instance_report'
 require './instance_cost_helper'
+require './instance_cost_report'
+require './chef_node_collection'
+require './role_instance_report'
 
 class AuditorOptionParser
   def self.parse(args)
@@ -39,10 +42,18 @@ reservations = aws_connection.get_instance_reservations(:state => 'active')
 running_instances = aws_connection.get_instances(:status => :running)
 
 ich = InstanceCostHelper.new(reservations, running_instances)
+ich.compute_costs
+
+chef_nodes = ChefNodeCollection.new('http://lechef.crittercism.com:4000/',
+  'david', '/home/david/.chef/david.pem', ich)
+chef_nodes.index_roles
 
 #rir = ReservedInstanceReport.new(reservations)
 #rir.write
 
 #icr = InstanceCostReport.new(ich)
 #icr.write
+
+rir = RoleInstanceReport.new(chef_nodes)
+rir.write
 
