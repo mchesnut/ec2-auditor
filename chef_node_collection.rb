@@ -24,7 +24,7 @@ class ChefNodeCollection
 
     nodes.keys.each do |node_name|
       node = rest.get_rest("/nodes/#{node_name}")
-      if !node.respond_to?(:run_list) || node.run_list.nil?
+      if !node.respond_to?(:run_list) || node.run_list.nil? || node.run_list.to_s.length == 0
         puts "Node #{node_name} had empty run list, skipping"
         next
       end
@@ -40,10 +40,11 @@ class ChefNodeCollection
 
       role_record = @role_instances[node_role] || Hash.new
       role_instance_record = role_record[node_instance_type] || Hash.new
-      riaz = role_instance_record[node_az] || { :count => 0, :cost => 0 }
+      riaz = role_instance_record[node_az] || { :count => 0, :cost => 0, :nodes => [] }
 
       riaz[:count] = riaz[:count] + 1
       riaz[:cost] = riaz[:cost] + @ich.instance_dollars_per_month(node_instance_type, node_az)
+      riaz[:nodes] << node_name
 
       role_instance_record[node_az] = riaz
       role_record[node_instance_type] = role_instance_record
