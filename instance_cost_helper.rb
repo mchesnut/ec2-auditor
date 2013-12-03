@@ -40,15 +40,27 @@ class InstanceCostHelper
   end
 
   def instance_opex_dollars_per_month(it, az)
-    category_opex_dollars_per_month(it,az) / category_count(it, az)
+    if category_count(it, az) > 0
+      category_opex_dollars_per_month(it,az) / category_count(it, az)
+    else
+      0
+    end
   end
 
   def instance_capex_dollars_per_month(it, az)
-    category_capex_dollars_per_month(it, az) / category_count(it, az)
+    if category_count(it, az) > 0
+      category_capex_dollars_per_month(it, az) / category_count(it, az)
+    else
+      0
+    end
   end
 
   def instance_dollars_per_month(it, az)
-    category_dollars_per_month(it, az) / category_count(it, az)
+    if category_count(it, az) > 0
+      category_dollars_per_month(it, az) / category_count(it, az)
+    else
+      0
+    end
   end
 
   protected
@@ -56,7 +68,7 @@ class InstanceCostHelper
     instance_types = [ "m1.small", "m1.medium", "m1.large", "m1.xlarge",
       "m3.xlarge", "m3.2xlarge", "t1.micro", "m2.xlarge", "m2.2xlarge",
       "m2.4xlarge", "c1.medium", "c1.xlarge" ]
-    availability_zones = [ 'us-west-1a', 'us-west-1c' ]
+    availability_zones = [ 'us-west-1a', 'us-west-1c', 'us-west-2a', 'us-west-2b' ]
 
     @dollars_per_month_spending = Hash.new
     instance_types.each do |ins_type|
