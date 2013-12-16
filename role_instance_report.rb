@@ -12,6 +12,7 @@ class RoleInstanceReport
       role_record.each do |instance_name, instance_record|
         instance_record.each do |az_name, az_record|
           puts "#{role_name},#{instance_name},#{az_name},#{az_record[:count]},$#{(az_record[:cost]/az_record[:count]).round(2)},$#{az_record[:cost].round(2)}"
+          #puts "  instances: #{az_record[:nodes].join(",")}"
         end
       end
     end
