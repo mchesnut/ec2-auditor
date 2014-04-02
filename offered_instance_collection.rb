@@ -21,18 +21,19 @@ class OfferedInstanceCollection
   def populate_on_demand
     # Populate heaps for on-demand instances
     on_demand_hourly_prices = {
-      "m1.small"    => 0.065,
-      "m1.medium"   => 0.130,
-      "m1.large"    => 0.260,
-      "m1.xlarge"   => 0.520,
-      "m3.xlarge"   => 0.550,
-      "m3.2xlarge"  => 1.100,
+      "m1.small"    => 0.047,
+      "m1.medium"   => 0.095,
+      "m1.large"    => 0.190,
+      "m1.xlarge"   => 0.379,
+      "m3.xlarge"   => 0.308,
+      "m3.2xlarge"  => 0.616,
       "t1.micro"    => 0.025,
-      "m2.xlarge"   => 0.460,
-      "m2.2xlarge"  => 0.920,
-      "m2.4xlarge"  => 1.840,
-      "c1.medium"   => 0.165,
-      "c1.xlarge"   => 0.660
+      "m2.xlarge"   => 0.275,
+      "m2.2xlarge"  => 0.550,
+      "m2.4xlarge"  => 1.100,
+      "c1.medium"   => 0.148,
+      "c1.xlarge"   => 0.592,
+      "c3.2xlarge"  => 0.478
     }
 
     on_demand_hourly_prices.each do |instance_type, on_demand_hourly_price|
