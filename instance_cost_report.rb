@@ -10,7 +10,7 @@ class InstanceCostReport
     puts "instance type,az,count,demand count,ri count,category opex $/mo,category capex $/mo,category $/mo,avg instance opex $/mo,avg instance capex $/mo,avg instance $/mo"
     instance_types = [ "m1.small", "m1.medium", "m1.large", "m1.xlarge",
       "m3.xlarge", "m3.2xlarge", "t1.micro", "m2.xlarge", "m2.2xlarge",
-      "m2.4xlarge", "c1.medium", "c1.xlarge" ]
+      "m2.4xlarge", "c1.medium", "c1.xlarge", "c3.2xlarge" ]
     availability_zones = [ 'us-west-1a', 'us-west-1c' ]
 
     instance_types.each do |it|
