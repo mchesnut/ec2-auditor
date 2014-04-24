@@ -25,6 +25,7 @@ class OfferedInstanceCollection
       "m1.medium"   => 0.095,
       "m1.large"    => 0.190,
       "m1.xlarge"   => 0.379,
+      "m3.medium"   => 0.077,
       "m3.xlarge"   => 0.308,
       "m3.2xlarge"  => 0.616,
       "t1.micro"    => 0.025,
@@ -33,7 +34,11 @@ class OfferedInstanceCollection
       "m2.4xlarge"  => 1.100,
       "c1.medium"   => 0.148,
       "c1.xlarge"   => 0.592,
-      "c3.2xlarge"  => 0.478
+      "c3.large"    => 0.120,
+      "c3.xlarge"   => 0.239,
+      "c3.2xlarge"  => 0.478,
+      "r3.2xlarge"  => 0.780,
+      "r3.4xlarge"  => 1.560
     }
 
     on_demand_hourly_prices.each do |instance_type, on_demand_hourly_price|
