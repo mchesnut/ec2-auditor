@@ -20,4 +20,4 @@ To run, first choose which reports you want; each one corresponds to two lines i
 
 Then do something like so:
 
-ruby main.rb -a `cat ~/.aws/accesskey` -s `cat ~/.aws/secretaccesskeyid`
+ruby main.rb -a \`cat ~/.aws/accesskey\` -s \`cat ~/.aws/secretaccesskeyid\`
